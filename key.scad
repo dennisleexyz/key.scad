@@ -6,7 +6,7 @@ $fs = 0.01;
 function k(sw) = sw[0]; // spacing between key centers [X-axis, Y-axis]
 function kco(sw) = sw[1]; // Bottom Housing [X, Y, Z-height]
 function keyc(sw) = sw[2]; // keycap [X, Y]
-function pins(sw) = sw[3]; // [[X position, Y position, Z-height, diameter]]
+function pins(sw) = sw[3]; // [[X position, Y position, Z-height, diameter (circular) or [X, Y] (rectangular)]]
 function pinz(sw) = max([for(pin=pins(sw))pin.z]); // max pin Z-height
 function h(sw) = sw[4]; // total switch height including pins,  excluding caps
 function plate(sw) = sw[5]; // plate Z-height
@@ -75,10 +75,35 @@ choc_v2 = [
 
 //ksw(choc_v2);
 
+// Kailh PG1425 X
+x = [
+    [17, 17],
+    [14.00, 14.00, 2.50-0.90],
+    [16.5, 16.5],
+    [
+        [-3.40, -2.00, 2, 1.10],
+        [-3.40, 2.90, 2, 1.10],
+        [0, -0.9, 2, [5.00, 2.90+1.10]],
+        [-5.50, 5.50, 0.60, 1.30],
+        [5.50, -5.50, 0.60, 1.30],
+    ],
+    2.00 + 2.50 + 2,
+    0.70,
+    [14.80, 14.00, 0.90],
+    2.00,
+];
+
+//ksw(x);
+
 module ksw(sw) {
     for (pin = pins(sw))
-        translate([pin.x, pin.y])
-            cylinder(h=pin.z, d=pin[3]);
+        translate([pin.x, pin.y, pinz(sw)-pin.z])
+            if (is_list(pin[3]))
+                let (x = pin[3].x, y = pin[3].y)
+                    translate([-x/2, -y/2])
+                        cube([x, y, pin.z]);
+            else
+                cylinder(h=pin.z, d=pin[3]);
     
     let (x = kco(sw).x, y = kco(sw).y)
         translate([-x/2, -y/2, pinz(sw)])
