@@ -3,16 +3,6 @@ include <units.scad>
 $fa = 0.01;
 $fs = 0.01;
 
-function k(sw) = sw[0]; // spacing between key centers [X-axis, Y-axis]
-function kco(sw) = sw[1]; // Bottom Housing [X, Y, Z-height]
-function keyc(sw) = sw[2]; // keycap [X, Y]
-function pins(sw) = sw[3]; // [[X position, Y position, Z-height, diameter (circular) or [X, Y] (rectangular)]]
-function pinz(sw) = max([for(pin=pins(sw))pin.z]); // max pin Z-height
-function h(sw) = sw[4]; // total switch height including pins,  excluding caps
-function plate(sw) = sw[5]; // plate Z-height
-function housing(sw) = sw[6]; // Top Housing [X, Y, Z-height]
-function stem(sw) = sw[7]; // Stem Z-height
-
 // Cherry MX
 mx = [
     [U, U],
@@ -34,8 +24,6 @@ mx = [
     3.6,
 ];
 
-//ksw(mx);
-
 // Kailh PG1280 KH Mid-height
 kh = [
     [U, U],
@@ -53,8 +41,6 @@ kh = [
     [13.00, 13.00, 4.40],
     3.00,
 ];
-
-//ksw(kh);
 
 // Kailh PG1350 Choc v1
 choc_v1 = [
@@ -74,8 +60,6 @@ choc_v1 = [
     3.00 - 0.50,
 ];
 
-//ksw(choc_v1);
-
 // Kailh PG1353 Choc v2
 choc_v2 = [
     [U, U],
@@ -92,8 +76,6 @@ choc_v2 = [
     [15.00, 15.00, 3.10],
     6.40 - 3.10,
 ];
-
-//ksw(choc_v2);
 
 // Kailh PG1425 X
 x = [
@@ -113,7 +95,17 @@ x = [
     2.00,
 ];
 
-//ksw(x);
+//render = mx;
+
+function k(sw) = sw[0]; // spacing between key centers [X-axis, Y-axis]
+function kco(sw) = sw[1]; // Bottom Housing [X, Y, Z-height]
+function keyc(sw) = sw[2]; // keycap [X, Y]
+function pins(sw) = sw[3]; // [[X position, Y position, Z-height, diameter (circular) or [X, Y] (rectangular)]]
+function pinz(sw) = max([for(pin=pins(sw))pin.z]); // max pin Z-height
+function h(sw) = sw[4]; // total switch height including pins,  excluding caps
+function plate(sw) = sw[5]; // plate Z-height
+function housing(sw) = sw[6]; // Top Housing [X, Y, Z-height]
+function stem(sw) = sw[7]; // Stem Z-height
 
 module ksw(sw) {
     for (pin = pins(sw))
@@ -133,3 +125,6 @@ module ksw(sw) {
         translate([-x/2, -y/2, pinz(sw)+kco(sw).z])
             cube([x, y, housing(sw).z]);
 }
+
+if (!is_undef(render))
+    mirror([0, 0, 1]) ksw(render);
