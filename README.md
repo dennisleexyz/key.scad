@@ -16,3 +16,6 @@ OpenSCAD library for mechanical keyboard switches and keycaps
 
 ## Kailh PG1425 X
 ![](docs/images/x.png)
+
+## Gateron KS-33 Low Profile
+![](docs/images/ks33.png)
