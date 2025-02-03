@@ -22,6 +22,7 @@ mx = [
     1.5,
     [15.6, 15.6, 11.6-5],
     3.6,
+    [14.87, 13.95, (1.89-1.41)*2],
 ];
 
 // Kailh PG1280 KH Mid-height
@@ -40,6 +41,7 @@ kh = [
     1.22, // 1.22 - 1.27
     [13.00, 13.00, 4.40],
     3.00,
+    [13.00, 12.20, 3.60-1.22],
 ];
 
 // Kailh PG1350 Choc v1
@@ -58,6 +60,7 @@ choc_v1 = [
     1.30,
     [15.00, 15.00, 5.80-(3.00-0.50)],
     3.00 - 0.50,
+    [14.50, 13.80, 2.20-1.30],
 ];
 
 // Kailh PG1353 Choc v2
@@ -75,6 +78,7 @@ choc_v2 = [
     1.65,
     [15.00, 15.00, 3.10],
     6.40 - 3.10,
+    [15.00, 13.95, 2.20-1.65],
 ];
 
 // Kailh PG1425 X
@@ -93,6 +97,7 @@ x = [
     0.70,
     [14.80, 14.00, 0.90],
     2.00,
+    [14.80, 14.00, 2.50-0.90-0.70],
 ];
 
 // Gateron KS-33 Low Profile
@@ -109,6 +114,7 @@ ks33 = [
     1.20, // ± 0.05
     [15.00, 15.00, 3.35],
     12.2 - (5.85 + 2.60),
+    [14.70, 14.00, 2.50-1.20],
 ];
 
 //render = mx;
@@ -122,6 +128,7 @@ function h(sw) = sw[4]; // total switch height including pins,  excluding caps
 function plate(sw) = sw[5]; // plate Z-height
 function housing(sw) = sw[6]; // Top Housing [X, Y, Z-height]
 function stem(sw) = sw[7]; // Stem Z-height
+function tab(sw) = sw[8]; // Mounting tabs that clip switch onto plate [X, Y, Z]
 
 module ksw(sw) {
     for (pin = pins(sw))
@@ -140,6 +147,10 @@ module ksw(sw) {
     let (x = housing(sw).x, y = housing(sw).y)
         translate([-x/2, -y/2, pinz(sw)+kco(sw).z])
             cube([x, y, housing(sw).z]);
+    
+    let (x = tab(sw).x, y = tab(sw).y, z = tab(sw).z)
+        translate([-x/2, -y/2, pinz(sw)+kco(sw).z-plate(sw)-z])
+            cube([x, y, z]);
 }
 
 if (!is_undef(render))
